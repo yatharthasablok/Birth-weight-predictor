@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Baby Prediction — Predict</title>
+
+  <style>
+    * { box-sizing: border-box; }
+    html,body { height:100%; margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: linear-gradient(180deg,#f6fbff 0%, #ffffff 60%); color:#1b2430; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+    .wrap {
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+    }
+
+    .card {
+      width:100%;
+      max-width:760px;
+      background:white;
+      border-radius:14px;
+      box-shadow:0 8px 30px rgba(23,43,77,0.08);
+      padding:28px;
+      border: 1px solid rgba(20,30,40,0.04);
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:22px;
+      align-items:start;
+    }
+
+    @media (max-width:880px) {
+      .card { grid-template-columns: 1fr; padding:20px; gap:16px; }
+    }
+
+    h1 { margin:0 0 8px 0; font-size:20px; color:#0f1724; }
+    p.lead { margin:0 0 18px 0; color:#475569; font-size:14px; line-height:1.5; }
+
+    form { display:grid; gap:12px; }
+    .row { display:flex; gap:12px; }
+    .row .field { flex:1; display:flex; flex-direction:column; }
+
+    label { font-size:13px; color:#334155; margin-bottom:6px; }
+    input[type="text"], input[type="number"] {
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #e6eef8;
+      background:#fbfdff;
+      font-size:14px;
+      color:#0f1724;
+      transition: box-shadow .12s, border-color .12s;
+    }
+    input:focus { box-shadow:0 4px 16px rgba(14,63,128,0.06); border-color:#8bb3ff; }
+
+    .actions { display:flex; gap:12px; align-items:center; margin-top:6px; }
+    .btn {
+      padding:10px 14px;
+      border-radius:10px;
+      border:none;
+      cursor:pointer;
+      font-weight:600;
+      font-size:14px;
+      color:white;
+      background: linear-gradient(90deg,#2563eb 0%, #4f46e5 100%);
+      box-shadow: 0 6px 18px rgba(79,70,229,0.14);
+    }
+    .btn:active { transform: translateY(1px); }
+
+    .result { margin-top:12px; font-weight:700; color:#0f1724; }
+    .muted { color:#64748b; font-size:13px; }
+
+    .panel {
+      padding:18px;
+      border-radius:10px;
+      background: linear-gradient(180deg,#fbfdff,#f7fbff);
+      border:1px solid rgba(14,63,128,0.03);
+      min-height:180px;
+    }
+    .panel h3 { margin:0 0 8px 0; font-size:16px; }
+    .panel p { margin:0; color:#475569; font-size:13px; line-height:1.5; }
+    footer { text-align:center; margin-top:24px; color:#94a3b8; font-size:13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="main">
+      <div>
+        <h1>Baby Prediction</h1>
+        <p class="lead">
+          Enter the required features and click <strong>Predict</strong>. 
+          The form sends your data to Flask and displays the predicted birth weight.
+        </p>
+
+        <form id="form" method="POST" action="/predict">
+          <div class="row">
+            <div class="field">
+              <label for="gestation">Gestation</label>
+              <input id="gestation" name="gestation" type="number" step="any" placeholder="e.g. 280" required>
+            </div>
+
+            <div class="field">
+              <label for="parity">Parity</label>
+              <input id="parity" name="parity" type="number" step="1" placeholder="e.g. 1" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="age">Age</label>
+              <input id="age" name="age" type="number" step="any" placeholder="e.g. 28" required>
+            </div>
+
+            <div class="field">
+              <label for="height">Height (cm)</label>
+              <input id="height" name="height" type="number" step="any" placeholder="e.g. 160" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="weight">Weight (kg)</label>
+              <input id="weight" name="weight" type="number" step="any" placeholder="e.g. 60" required>
+            </div>
+
+            <div class="field">
+              <label for="smoke">Smoke (0 = No, 1 = Yes)</label>
+              <input id="smoke" name="smoke" type="number" step="1" min="0" max="1" placeholder="0 or 1" required>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn" type="submit" id="submit">Predict</button>
+            <div class="muted">Flask must be running at <code>http://127.0.0.1:5000</code></div>
+          </div>
+
+          <div class="result" id="result">Predicted birth weight: {{ prediction }}</div>
+        </form>
+
+        <footer>Made with ❤️ — Fill fields and press Predict</footer>
+      </div>
+
+      <aside class="panel">
+        <h3>Notes & Troubleshooting</h3>
+        <p>• Make sure your Flask backend is running before you hit Predict.</p>
+        <p>• If you get a “Feature names mismatch” error, ensure the model’s input column names match those here: gestation, parity, age, height, weight, smoke.</p>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>
